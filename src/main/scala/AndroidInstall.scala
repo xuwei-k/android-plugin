@@ -82,9 +82,30 @@ object AndroidInstall {
     aaptPackage <<= aaptPackageTask,
     aaptPackage <<= aaptPackage dependsOn (makeAssetPath, dx),
     dx <<= dxTask,
-    dxInputs <<= (proguardInJars, scalaInstance, classDirectory) map {
-      ( proguardInJars, scalaInstance, classDirectory) =>
-      (classDirectory +++ proguardInJars +++ scalaInstance.libraryJar) get
+    scalaLibraryFilter <<= (streams).map{s =>
+      {base:File =>
+        new SimpleFileFilter(f =>
+          IO.relativize(base,f).map{ path =>
+            if(path.startsWith("scala/actors") || path.startsWith("scala/concurrent/forkjoin")){
+              s.log.info("delete " + path)
+              false
+            }else true
+          }.getOrElse(false)
+        )
+      }
+    },
+    scalaMinJar <<= (scalaInstance,scalaLibraryFilter) map { (scalaInstance,scalaLibraryFilter) =>
+      val dir = IO.createTemporaryDirectory
+      val files = IO.unzip(scalaInstance.libraryJar,dir)
+      val filter = scalaLibraryFilter(dir)
+      val newFiles = files.filter(filter.accept)
+      val miniScala = dir / "scala-library-min.jar"
+      IO.zip( newFiles.map{f => f -> IO.relativize(dir,f).get } , miniScala )
+      miniScala
+    },
+    dxInputs <<= (proguardInJars, classDirectory, scalaMinJar) map {
+      ( proguardInJars, classDirectory, scalaMinJar) =>
+        (classDirectory +++ proguardInJars +++ scalaMinJar ) get
     },
 
     cleanApk <<= (packageApkPath) map (IO.delete(_)),
