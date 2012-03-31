@@ -115,7 +115,8 @@ object AndroidInstall {
       (ApkConfig(_, _, _, _, _, _, _, _)),
 
     packageDebug <<= packageTask(true),
-    packageRelease <<= packageTask(false)
+    packageRelease <<= packageTask(false),
+    autoScalaLibrary in GlobalScope := false
   ) ++ Seq(packageDebug, packageRelease).map {
     t => t <<= t dependsOn (cleanApk, aaptPackage, copyNativeLibraries)
   })
