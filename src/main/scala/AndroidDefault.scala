@@ -36,6 +36,7 @@ object AndroidDefaults {
     envs := DefaultEnvs,
     // a list of modules which are already included in Android
     preinstalledModules := Seq[ModuleID](
+      ModuleID("org.scala-lang", "scala-library", null),
       ModuleID("org.apache.httpcomponents", "httpcore", null),
       ModuleID("org.apache.httpcomponents", "httpclient", null),
       ModuleID("org.json", "json" , null),
