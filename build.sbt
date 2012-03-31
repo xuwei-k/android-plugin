@@ -11,3 +11,5 @@ libraryDependencies ++= Seq(
 )
 
 sbtPlugin := true
+
+seq(ScriptedPlugin.scriptedSettings: _*)
