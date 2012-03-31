@@ -11,5 +11,3 @@ libraryDependencies ++= Seq(
 )
 
 sbtPlugin := true
-
-commands += Status.stampVersion
