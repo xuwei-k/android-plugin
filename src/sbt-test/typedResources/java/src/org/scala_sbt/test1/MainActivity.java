@@ -6,7 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-  private final TypedViewHolder folder = TypedResource.activity2typed(this);
+  private final TypedViewHolder folder = TypedViewHolder.getInstance(this);
 
   @Override 
   protected void onCreate(Bundle savedInstanceState) {

@@ -164,6 +164,7 @@ object AndroidKeys {
 
 
   /** TypedResources Task */
+  val typedResourceType = SettingKey[TypedResourceType]("typed-resources-type")
   val generateTypedResources = TaskKey[Seq[File]]("generate-typed-resources",
     """Produce a file TR.scala that contains typed
        references to layout resources.""")

@@ -7,8 +7,8 @@ import AndroidKeys._
 
 object TypedResources {
   private def generateTypedResourcesTask =
-    (typedResource, layoutResources, jarPath, manifestPackage, streams) map {
-    (typedResource, layoutResources, jarPath, manifestPackage, s) =>
+    (typedResource, layoutResources, jarPath, manifestPackage, typedResourceType, streams) map {
+    (typedResource, layoutResources, jarPath, manifestPackage, typedResourceType, s) =>
       val Id = """@\+id/(.*)""".r
       val androidJarLoader = ClasspathUtilities.toLoader(jarPath)
 
@@ -58,58 +58,20 @@ object TypedResources {
         case (id, _) => reserved.contains(id)
       }
 
-      IO.write(typedResource,
-    """     |package %s
-            |import _root_.android.app.{Activity, Dialog}
-            |import _root_.android.view.View
-            |
-            |case class TypedResource[T](id: Int)
-            |case class TypedLayout(id: Int)
-            |
-            |object TR {
-            |%s
-            | object layout {
-            | %s
-            | }
-            |}
-            |trait TypedViewHolder {
-            |  def findViewById( id: Int ): View
-            |  def findView[T](tr: TypedResource[T]) = findViewById(tr.id).asInstanceOf[T]
-            |}
-            |trait TypedView extends View with TypedViewHolder
-            |trait TypedActivityHolder extends TypedViewHolder
-            |trait TypedActivity extends Activity with TypedActivityHolder
-            |trait TypedDialog extends Dialog with TypedViewHolder
-            |object TypedResource {
-            |  implicit def layout2int(l: TypedLayout) = l.id
-            |  implicit def view2typed(v: View) = new TypedViewHolder { 
-            |    def findViewById( id: Int ) = v.findViewById( id )
-            |  }
-            |  implicit def activity2typed(a: Activity) = new TypedViewHolder { 
-            |    def findViewById( id: Int ) = a.findViewById( id )
-            |  }
-            |  implicit def dialog2typed(d: Dialog) = new TypedViewHolder { 
-            |    def findViewById( id: Int ) = d.findViewById( id )
-            |  }
-            |}
-            |""".stripMargin.format(
-              manifestPackage,
-              resources map { case (id, classname) =>
-                "  val %s = TypedResource[%s](R.id.%s)".format(id, classname, id)
-              } mkString "\n",
-              layouts map {
-                case Some(layoutName) => " val %s = TypedLayout(R.layout.%s)".format(layoutName, layoutName)
-                case None => ""
-              } mkString "\n"
-            )
-        )
-        s.log.info("Wrote %s" format(typedResource))
-        Seq(typedResource)
+      typedResourceType.write(typedResource,manifestPackage,resources,layouts)
+
+      s.log.info("Wrote %s" format(typedResource))
+      Seq(typedResource)
     }
 
   lazy val settings: Seq[Setting[_]] = inConfig(Android) (Seq (
-    typedResource <<= (manifestPackage, managedScalaPath) map {
-      _.split('.').foldLeft(_) ((p, s) => p / s) / "TR.scala"
+    typedResourceType <<= (autoScalaLibrary){ autoScala =>
+      if(autoScala) TypedResourceType.Scala 
+      else TypedResourceType.Java
+    },
+    typedResource <<= (manifestPackage, managedScalaPath, typedResourceType) map {
+      (manifestPackage, managedScalaPath, typedResourceType) =>
+       manifestPackage.split('.').foldLeft(managedScalaPath)(_ / _) / (typedResourceType.fileName)
     },
     layoutResources <<= (mainResPath) map { x=>  (x / "layout" ** "*.xml" get) },
 

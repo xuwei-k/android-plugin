@@ -1,4 +1,6 @@
+> show android:generate-typed-resources 
+$ exec cat target/scala-2.9.1/src_managed/main/scala/org/scala_sbt/test1/TR.java
 > compile
 > show android:layout-resources
-$ exec cat target/scala-2.9.1/src_managed/main/scala/org/scala_sbt/test1/TR.scala
+$ exec cat target/scala-2.9.1/src_managed/main/scala/org/scala_sbt/test1/TR.java
 $ exec cat target/scala-2.9.1/src_managed/main/java/org/scala_sbt/test1/R.java
