@@ -27,3 +27,9 @@ libraryDependencies ++= Seq(
 sbtPlugin := true
 
 commands += Status.stampVersion
+
+ScriptedPlugin.scriptedSettings
+
+watchSources <++= sbtTestDirectory map { dir => (dir ***).get.filterNot{_.name.head == '.'} }
+
+scriptedBufferLog := false
