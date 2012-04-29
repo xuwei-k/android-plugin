@@ -1,8 +1,8 @@
 <manifest
-android:versionName="0.1" android:versionCode="1" package="org.scala_sbt.test1" xmlns:android="http://schemas.android.com/apk/res/android">
+android:versionName="0.1" android:versionCode="1" package="android_plugin_test" xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-sdk android:minSdkVersion="7" />
-  <application android:icon="@drawable/android:star_big_on" android:label="@string/app_name">
-    <activity android:label="@string/app_name" android:name=".MainActivity">
+  <application android:icon="@drawable/android:star_big_on" android:label="typed_resource_java">
+    <activity android:label="typed_resource_java" android:name=".MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

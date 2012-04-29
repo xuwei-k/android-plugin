@@ -71,7 +71,8 @@ object TypedResources {
     },
     typedResource <<= (manifestPackage, managedScalaPath, typedResourceType) map {
       (manifestPackage, managedScalaPath, typedResourceType) =>
-       manifestPackage.split('.').foldLeft(managedScalaPath)(_ / _) / (typedResourceType.fileName)
+       val path = manifestPackage.split('.').foldLeft(managedScalaPath)(_ / _)
+       typedResourceType.generateFiles(path)
     },
     layoutResources <<= (mainResPath) map { x=>  (x / "layout" ** "*.xml" get) },
 

@@ -4,54 +4,51 @@ sealed abstract class TypedResourceType{
   protected val base:String
   protected def resourceLine(id:String,classname:String):String
   protected def layout(layoutName:String):String
-  val fileName:String
 
-  final def write(file:File,packageName:String,resources:Map[String,String],layouts:Seq[Option[String]]){
-    IO.write(
-      file,
-      base.format(
-        packageName,
-        resources.map(Function tupled resourceLine) mkString "\n",
-        layouts map {
-          _.map(layout) getOrElse ""
-        } mkString "\n"
-      ) 
-    ) 
-  }
+  def generateFiles(path:File,packageName:String,resources:Map[String,String],layouts:Seq[Option[String]]):Seq[File]
+
+  /*
+ }
+  */
 }
 
 object TypedResourceType{
 
+
   object Java extends TypedResourceType{
-    val fileName = "TR.java"
-    val base =
+    val typedResource = 
    """|package %s;
-      |import android.app.Activity;
-      |import android.app.Dialog;
-      |import android.view.View;
-      |
       |class TypedResource<T>{
       |  public final int id;
       |  public TypedResource(final int id){
       |    this.id = id;
       |  }
-      |}
-      |
+      |}"""
+
+    val typedLayout = 
+   """|package %s;
       |class TypedLayout{
       |  public final int id;
       |  public TypedLayout(final int id){
       |    this.id = id;
       |  }
-      |}
+      |}"""
+      
+    val tr =
+   """|package %s;
+      |import android.app.Activity;
+      |import android.app.Dialog;
+      |import android.view.View;
       |
       |public class TR {
       |%s
       | public static class layout {
       | %s
       | }
-      |}
-      |
-      |abstract class TypedViewHolder {
+      |}"""
+
+    val typedViewHolder =
+   """|abstract class TypedViewHolder {
       |  abstract public View findViewById(int id);
       |  public final <T> T findView(TypedResource<T> tr){
       |    return (T)findViewById(tr.id);
@@ -81,17 +78,29 @@ object TypedResourceType{
       |    };
       |  }
       |}
-      |""".stripMargin
+      |"""
 
     def resourceLine(id:String,classname:String) = 
-      "public static TypedResource<%s> %s = new TypedResource<%s>(R.id.%s);".format(classname, id, classname, id)
+      "  public static TypedResource<%s> %s = new TypedResource<%s>(R.id.%s);".format(classname, id, classname, id)
 
     def layout(layoutName:String) =
-      "public static TypedLayout %s = new TypedLayout(R.layout.%s);".format(layoutName, layoutName)
+      "   public static TypedLayout %s = new TypedLayout(R.layout.%s);".format(layoutName, layoutName)
   }
   
 
   object Scala extends TypedResourceType{
+    def generateFiles(path:String,packageName:String,resources:Map[String,String],layouts:Seq[Option[String]]):Seq[File] = 
+      IO.write(
+        path ,
+        base.format(
+          packageName,
+          resources.map(Function tupled resourceLine) mkString "\n",
+          layouts map {
+            _.map(layout) getOrElse ""
+          } mkString "\n"
+        ) 
+      ) 
+ 
     val fileName = "TR.scala"
     val base =
    """|package %s

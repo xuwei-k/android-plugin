@@ -1,4 +1,4 @@
-package org.scala_sbt.test1;
+package android_plugin_test.hoge;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,10 +11,9 @@ public class MainActivity extends Activity {
   @Override 
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    TextView text = folder.findView(TR.text);
-    Button button = folder.findView(TR.button);
-    setContentView(new TextView(this) {{
-      setText("hello, world");
-    }});
+    final Button button = folder.findView(TR.button);
+    final TextView text = folder.findView(TR.text);
+    text.setText("hello, world");
+    setContentView(TR.layout.sample_activity.id);
   }
 }

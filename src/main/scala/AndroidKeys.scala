@@ -76,7 +76,7 @@ object AndroidKeys {
 
   /** Typed Resource Settings */
   val managedScalaPath = SettingKey[File]("managed-scala-path")
-  val typedResource = TaskKey[File]("typed-resource",
+  val typedResource = TaskKey[Seq[File]]("typed-resource",
     """Typed resource file to be generated, also includes
        interfaces to access these resources.""")
   val layoutResources = TaskKey[Seq[File]]("layout-resources", 
