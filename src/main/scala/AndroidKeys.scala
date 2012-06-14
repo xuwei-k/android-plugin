@@ -15,9 +15,6 @@ object AndroidKeys {
   val versionCode = SettingKey[Int]("version-code")
   val versionName = TaskKey[String]("version-name")
 
-  /** Proguard Settings */
-  val proguardOption = SettingKey[String]("proguard-option")
-  val proguardOptimizations = SettingKey[Seq[String]]("proguard-optimizations")
   val libraryJarPath = SettingKey[Seq[File]]("library-path")
 
   /** Default Settings */
@@ -68,7 +65,6 @@ object AndroidKeys {
   val classesDexPath = SettingKey[File]("classes-dex-path")
   val resourcesApkPath = SettingKey[File]("resources-apk-path")
   val packageApkPath = TaskKey[File]("package-apk-path")
-  val useProguard = SettingKey[Boolean]("use-proguard")
 
   /** Install Settings */
   val packageConfig = TaskKey[ApkConfig]("package-config",
@@ -79,9 +75,9 @@ object AndroidKeys {
   val typedResource = TaskKey[File]("typed-resource",
     """Typed resource file to be generated, also includes
        interfaces to access these resources.""")
-  val layoutResources = TaskKey[Seq[File]]("layout-resources", 
+  val layoutResources = TaskKey[Seq[File]]("layout-resources",
       """All files that are in res/layout. They will
-		 be accessable through TR.layouts._""")
+         be accessable through TR.layouts._""")
 
   /** Market Publish Settings */
   val keystorePath = SettingKey[File]("key-store-path")
@@ -123,7 +119,6 @@ object AndroidKeys {
   val packageRelease = TaskKey[File]("package-release", "Package without signing.")
   val cleanApk = TaskKey[Unit]("clean-apk", "Remove apk package")
 
-  val proguard = TaskKey[Option[File]]("proguard", "Optimize class files.")
   val dxInputs = TaskKey[Seq[File]]("dx-inputs", "Input for dex command")
   val dx = TaskKey[File]("dx", "Convert class files to dex files")
 

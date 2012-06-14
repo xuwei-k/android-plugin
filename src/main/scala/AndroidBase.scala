@@ -187,13 +187,10 @@ object AndroidBase {
     classesMinJarPath <<= (target, classesMinJarName) (_ / _),
     classesDexPath <<= (target, classesDexName) (_ / _),
     resourcesApkPath <<= (target, resourcesApkName) (_ / _),
-    useProguard := true,
-    proguardOptimizations := Seq.empty,
 
     jarPath <<= (platformPath, jarName) (_ / _),
     libraryJarPath <<= (jarPath (_ get)),
 
-    proguardOption := "",
     proguardExclude <<= (libraryJarPath, classDirectory, resourceDirectory) map {
         (libPath, classDirectory, resourceDirectory) =>
           libPath :+ classDirectory :+ resourceDirectory
