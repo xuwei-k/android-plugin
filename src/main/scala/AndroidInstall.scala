@@ -38,8 +38,8 @@ object AndroidInstall {
   }
 
   private def dxTask: Project.Initialize[Task[File]] =
-    (dxPath, dxInputs, dxJavaOpts, classDirectory, classesDexPath, streams) map {
-    (dxPath, dxInputs, dxJavaOpts, classDirectory, classesDexPath, streams) =>
+    (dxPath, dxInputs, dxOpts, classDirectory, classesDexPath, streams) map {
+    (dxPath, dxInputs, dxOpts, classDirectory, classesDexPath, streams) =>
 
       val uptodate = classesDexPath.exists &&
         !(dxInputs +++ (classDirectory ** "*.class") get).exists (_.lastModified > classesDexPath.lastModified)
@@ -48,7 +48,7 @@ object AndroidInstall {
         //val noLocals = if (proguardOptimizations.isEmpty) "" else "--no-locals"
         val noLocals =  "--no-locals"
         val dxCmd = (Seq(dxPath.absolutePath,
-                        dxMemoryParameter(dxJavaOpts),
+                        dxMemoryParameter(dxOpts._1),
                         "--dex", noLocals,
                         "--num-threads="+java.lang.Runtime.getRuntime.availableProcessors,
                         "--output="+classesDexPath.absolutePath) ++
@@ -57,7 +57,6 @@ object AndroidInstall {
         streams.log.info("Dexing "+classesDexPath)
         streams.log.debug(dxCmd !!)
       } else streams.log.debug("dex file uptodate, skipping")
-
       classesDexPath
     }
 
