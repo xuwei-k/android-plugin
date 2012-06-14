@@ -2,7 +2,7 @@ import AndroidKeys._
 
 name := "test1"
 
-scalaVersion := "2.8.2"
+scalaVersion := "2.10.0-M4"
 
 platformName in Android := "android-7"
 
