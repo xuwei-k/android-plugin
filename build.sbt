@@ -12,4 +12,12 @@ libraryDependencies ++= Seq(
 
 sbtPlugin := true
 
-seq(ScriptedPlugin.scriptedSettings: _*)
+ScriptedPlugin.scriptedSettings
+
+ScriptedPlugin.scriptedBufferLog := false
+
+ScriptedPlugin.scriptedLaunchOpts ++= {
+  import scala.collection.JavaConverters._
+  val args = Seq("-Xmx","-Xms")
+  management.ManagementFactory.getRuntimeMXBean().getInputArguments().asScala.filter(a => args.contains(a) || a.startsWith("-XX")).toSeq
+}
