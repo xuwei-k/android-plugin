@@ -32,7 +32,9 @@ object AndroidMarketPublish {
       val out = new StringBuffer
       val exit = jarsigner.run(new ProcessIO(input => (),
                             output => out.append(IO.readStream(output)),
-                            error  => out.append(IO.readStream(error)))
+                            error  => out.append(IO.readStream(error)),
+                            _ => false
+                            )
                         ).exitValue()
       if (exit != 0) sys.error("Error signing: "+out)
       s.log.debug(out.toString)
